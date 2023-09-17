@@ -115,5 +115,5 @@ void loop() {
     analogWrite(pin1, value);
     analogWrite(pin2, value);
   }
-  delay(2000);
+  delay(500);
 }
