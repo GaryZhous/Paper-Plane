@@ -9,8 +9,6 @@
 enum PINS {
   pin1 = 4,
   pin2 = 16,
-  pin3 = 17,
-  pin4 = 5
 };
 
 Adafruit_MPU6050 mpu;
@@ -98,19 +96,24 @@ void sendSensorData(float AX, float AY, float AZ, float GX, float GY, float GZ) 
 
     http.end();
 }
+bool check(sensors_event_t& a){ //check if the plane is about to hit the ground
+  return a.acceleration.z < -6;
+}
 
 void loop() {
   int value = received().toInt();
   Serial.println(value);
   analogWrite(pin1, value);
   analogWrite(pin2, value);
-  analogWrite(pin3, value);
-  analogWrite(pin4, value);
   
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
-  
-  sendSensorData(a.acceleration.x, a.acceleration.y, a.acceleration.z, g.gyro.x, g.gyro.y, g.gyro.z);
-  
+
+  if(!check(a))
+    sendSensorData(a.acceleration.x, a.acceleration.y, a.acceleration.z, g.gyro.x, g.gyro.y, g.gyro.z);
+  else{ //stop the engines to prevent great damage
+    analogWrite(pin1, value);
+    analogWrite(pin2, value);
+  }
   delay(2000);
 }
