@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const escapeHtml = require('escape-html');
 const app = express();
 const PORT = 8080;
 
@@ -25,7 +26,7 @@ async function calculateOptimumSpeed(ax, ay, az) {
 
 app.get('/api/slider-value', (req, res) => {
     console.log(sliderValue);
-    res.send(sliderValue);
+    res.send(escapeHtml(sliderValue));
 });
 
 app.post('/api/slider-value', (req, res) => {
